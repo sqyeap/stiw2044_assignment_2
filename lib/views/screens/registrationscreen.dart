@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-import '../config.dart';
+import '../../config.dart';
 
 class RegistrationScreen extends StatefulWidget {
     const RegistrationScreen({super.key});
@@ -358,7 +358,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>{
 
     loadEula() async {
         WidgetsFlutterBinding.ensureInitialized();
-        eula = await rootBundle.loadString('assets/images/eula.txt');
+        eula = await rootBundle.loadString('assets/eula.txt');
     }
 
     showEula() {
@@ -410,14 +410,16 @@ class _RegistrationScreenState extends State<RegistrationScreen>{
 
     void _registerUser(String name, String email, String phone, String pass) {
         try {
-            http.post(Uri.parse("${Config.SERVER}/php/register_user.php"), 
-            body: {
-                "name": name,
-                "email": email,
-                "phone": phone,
-                "password": pass,
-                "register": "register"
-            }).then((response) {
+            http.post(
+                Uri.parse("${Config.SERVER}/php/register_user.php"),
+                body: {
+                    "name": name,
+                    "email": email,
+                    "phone": phone,
+                    "password": pass,
+                    "register": "register"
+                }
+            ).then((response) {
                 var data = jsonDecode(response.body);
                 if (response.statusCode == 200 && data['status'] == "success") {
                     Fluttertoast.showToast(

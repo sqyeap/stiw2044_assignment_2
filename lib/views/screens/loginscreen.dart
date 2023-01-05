@@ -7,8 +7,8 @@ import 'package:http/http.dart' as http;
 
 import 'mainscreen.dart';
 import 'registrationscreen.dart';
-import '../models/user.dart';
-import '../config.dart';
+import '../../models/user.dart';
+import '../../config.dart';
 
 class LoginScreen extends StatefulWidget {
     const LoginScreen({super.key});
@@ -26,9 +26,16 @@ class _LoginScreenState extends State<LoginScreen> {
     var screenHeight, screenWidth, cardWidth;
 
     @override
+    void initState() {
+        super.initState();
+        loadPref();
+    }
+
+    @override
     Widget build(BuildContext context) {
         screenHeight = MediaQuery.of(context).size.height;
         screenWidth = MediaQuery.of(context).size.width;
+        
         if (screenWidth <= 600) {
             cardWidth = screenWidth;
         } else {
