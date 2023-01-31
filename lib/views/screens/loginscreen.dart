@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'mainscreen.dart';
 import 'registrationscreen.dart';
 import '../../models/user.dart';
-import '../../config.dart';
+import '../../serverconfig.dart';
 
 class LoginScreen extends StatefulWidget {
     const LoginScreen({super.key});
@@ -225,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
         String _email = _emailEditingController.text;
         String _pass = _passEditingController.text;
         http.post(
-            Uri.parse("${Config.SERVER}/php/login_user.php"),
+            Uri.parse("${ServerConfig.SERVER}/php/login_user.php"),
             body: {"email": _email, "password": _pass}
         ).then(
             (response) {
@@ -261,7 +261,7 @@ class _LoginScreenState extends State<LoginScreen> {
             email: "unregistered",
             name: "unregistered",
             address: "na",
-            phone: "0123456789",
+            phone: "na",
             regdate: "0"
         );
         Navigator.pop(

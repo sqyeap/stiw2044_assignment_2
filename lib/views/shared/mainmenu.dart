@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/user.dart';
+import '../../serverconfig.dart';
 import '../screens/mainscreen.dart';
 import '../screens/ownerscreen.dart';
 import '../screens/profilescreen.dart';
@@ -15,6 +16,8 @@ class MainMenuWidget extends StatefulWidget {
 }
 
 class _MainMenuWidgetState extends State<MainMenuWidget> {
+    var val = 50;
+
     @override
     Widget build(BuildContext context) {
         return Drawer(
@@ -25,8 +28,11 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                     UserAccountsDrawerHeader(
                         accountEmail: Text(widget.user.email.toString()),
                         accountName: Text(widget.user.name.toString()),
-                        currentAccountPicture: const CircleAvatar(
+                        currentAccountPicture: CircleAvatar(
                             radius: 30.0,
+                            backgroundImage:
+                                NetworkImage("${ServerConfig.SERVER}/assets/profileimages/${widget.user.id}.png?v=$val"),
+                            backgroundColor: Colors.transparent,
                         ),
                     ),
                     ListTile(

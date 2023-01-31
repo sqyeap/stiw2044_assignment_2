@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-import '../../config.dart';
+import '../../serverconfig.dart';
 import '../../models/homestay.dart';
 import '../../models/user.dart';
 
@@ -60,7 +60,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         return Scaffold(
             appBar: AppBar(
                 title: const Text(
-                    "Details/Edit"
+                    "Edit Details"
                 )
             ),
             body: SingleChildScrollView(
@@ -68,6 +68,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     children: [
                         Card(
                             elevation: 8,
+                            // replaced Container
                             child: Container(
                                 height: screenHeight / 3,
                                 width: resWidth,
@@ -75,7 +76,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     width: resWidth,
                                     fit: BoxFit.cover,
                                     imageUrl:
-                                        "${Config.SERVER}/assets/homestayimages/${widget.homestay.homestayId}.png",
+                                        "${ServerConfig.SERVER}/assets/homestayimages/${widget.homestay.homestayId}_1.png",
                                     placeholder: (context, url) =>
                                         const LinearProgressIndicator(),
                                     errorWidget: (context, url, error) =>
@@ -145,7 +146,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                         textInputAction: TextInputAction.next,
                                                         controller: _hspriceEditingController,
                                                         validator: (val) => val!.isEmpty
-                                                            ? "Product price must contain value"
+                                                            ? "Homestay price must contain value"
                                                             : null,
                                                         keyboardType: TextInputType.number,
                                                         decoration: const InputDecoration(
@@ -288,7 +289,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         String hsdesc = _hsdescEditingController.text;
         String hsprice = _hspriceEditingController.text;
         
-        http.post(Uri.parse("${Config.SERVER}/php/update_homestay.php"),
+        http.post(Uri.parse("${ServerConfig.SERVER}/php/update_homestay.php"),
         body: {
             "homestayid": widget.homestay.homestayId,
             "userid": widget.user.id,

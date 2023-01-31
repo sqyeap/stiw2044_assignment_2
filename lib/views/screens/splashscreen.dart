@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import '../../config.dart';
+import '../../serverconfig.dart';
 import '../../models/user.dart';
 
 import 'mainscreen.dart';
@@ -84,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen> {
         String pass = (prefs.getString('pass')) ?? '';
         
         if (email.isNotEmpty) {
-            http.post(Uri.parse("${Config.SERVER}/php/login_user.php"),
+            http.post(Uri.parse("${ServerConfig.SERVER}/php/login_user.php"),
             body: {"email": email, "password": pass}).then((response) {
                 print(response.body);
                 var jsonResponse = json.decode(response.body);
@@ -105,7 +105,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         email: "unregistered",
                         name: "unregistered",
                         address: "na",
-                        phone: "0123456789",
+                        phone: "na",
                         regdate: "0"
                     );
                     Timer(
@@ -122,10 +122,10 @@ class _SplashScreenState extends State<SplashScreen> {
         } else {
             User user = User(
                 id: "0",
-                email: "unregistered@email.com",
+                email: "unregistered",
                 name: "unregistered",
                 address: "na",
-                phone: "0123456789",
+                phone: "na",
                 regdate: "0"
             );
             Timer(

@@ -9,7 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 
-import '../../config.dart';
+import '../../serverconfig.dart';
 import '../../models/user.dart';
 
 class AddHomestayScreen extends StatefulWidget {
@@ -393,7 +393,7 @@ class _AddHomestayScreenState extends State<AddHomestayScreen> {
         String base64Image2 = base64Encode(_imageList[1].readAsBytesSync());
         String base64Image3 = base64Encode(_imageList[2].readAsBytesSync());
 
-        http.post(Uri.parse("${Config.SERVER}/php/insert_homestay.php"),
+        http.post(Uri.parse("${ServerConfig.SERVER}/php/insert_homestay.php"),
         body: {
             "userid": widget.user.id,
             "hsname": hsname,

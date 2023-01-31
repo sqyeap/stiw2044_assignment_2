@@ -8,8 +8,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../config.dart';
+import '../../serverconfig.dart';
 import '../../models/user.dart';
 import '../../models/homestay.dart';
 import '../shared/mainmenu.dart';
@@ -29,7 +30,7 @@ class OwnerScreen extends StatefulWidget {
 }
 
 class _OwnerScreenState extends State<OwnerScreen> {
-	var _lat, lon;
+	var _lat, _lon;
 	late Position _position;
 	List<Homestay> homestayList = <Homestay>[];
 	String titlecenter = "Loading...";
@@ -70,18 +71,18 @@ class _OwnerScreenState extends State<OwnerScreen> {
 						"Owner"
 					),
 					actions: [
-						IconButton(
-							onPressed: _registrationForm,
-							icon: const Icon(
-								Icons.app_registration
-							)
-						),
-						IconButton(
-							onPressed: _loginForm,
-							icon: const Icon(
-								Icons.login
-							)
-						),
+						// IconButton(
+						// 	onPressed: _registrationForm,
+						// 	icon: const Icon(
+						// 		Icons.app_registration
+						// 	)
+						// ),
+						// IconButton(
+						// 	onPressed: _loginForm,
+						// 	icon: const Icon(
+						// 		Icons.login
+						// 	)
+						// ),
 						PopupMenuButton(
 							// add icon, by default "3 dot" icon
 							// icon: Icon(Icons.book)
@@ -93,8 +94,16 @@ class _OwnerScreenState extends State<OwnerScreen> {
 									),
 									const PopupMenuItem<int>(
 										value: 1,
-										child: Text("My Order"),
+										child: Text("Register Account"),
 									),
+									const PopupMenuItem<int>(
+										value: 2,
+										child: Text("Login"),
+									),
+									const PopupMenuItem<int>(
+										value: 3,
+										child: Text("Logout"),
+									)
 								];
 							},
 							onSelected: (value) {
@@ -102,9 +111,14 @@ class _OwnerScreenState extends State<OwnerScreen> {
 									_gotoNewHomestay();
 									print("My account menu is selected.");
 								} else if (value == 1) {
-									print("Settings menu is selected.");
+									_registrationForm();
+									print("Registration menu is selected.");
 								} else if (value == 2) {
-									print("Logout menu is selected.");
+									_loginForm();
+									print("Login menu is selected.");
+								} else if (value == 3) {
+									_logoutDialog();
+									print("Lougout dialog is selected.");
 								}
 							}
 						),
@@ -161,7 +175,7 @@ class _OwnerScreenState extends State<OwnerScreen> {
 																	width: resWidth / 2,
 																	fit: BoxFit.cover,
 																	imageUrl:
-																		"${Config.SERVER}/assets/homestayimages/${homestayList[index].homestayId}_1.png",
+																		"${ServerConfig.SERVER}/assets/homestayimages/${homestayList[index].homestayId}_1.png",
 																	placeholder: (context, url) =>
 																		const LinearProgressIndicator(),
 																	errorWidget: (context, url, error) =>
@@ -245,6 +259,68 @@ class _OwnerScreenState extends State<OwnerScreen> {
 			)
 		);
 	}
+
+	void _logoutDialog() {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+                return AlertDialog(
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(20.0)
+                        )
+                    ),
+                    title: const Text(
+                        "Logout?",
+                        style: TextStyle(),
+                    ),
+                    content: const Text(
+                        "Are your sure"
+                    ),
+                    actions: <Widget>[
+                        TextButton(
+                            child: const Text(
+                                "Yes",
+                                style: TextStyle(),
+                            ),
+                            onPressed: () async {
+                                Navigator.of(context).pop();
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                await prefs.setString('email', '');
+                                await prefs.setString('pass', '');
+                                await prefs.setBool('remember', false);
+                                User user = User(
+                                    id: "0",
+                                    email: "unregistered",
+                                    name: "unregistered",
+                                    address: "na",
+                                    phone: "na",
+                                    regdate: "0",
+                                    // credit: '0'
+                                );
+                                // ignore: use_build_context_synchronously
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (content) => MainScreen(user: user)
+                                    )
+                                );
+                            },
+                        ),
+                        TextButton(
+                            child: const Text(
+                                "No",
+                                style: TextStyle(),
+                            ),
+                            onPressed: () {
+                                Navigator.of(context).pop();
+                            },
+                        ),
+                    ],
+                );
+            },
+        );
+    }
 
 	Future<void> _gotoNewHomestay() async {
 		if (widget.user.id == "0") {
@@ -362,7 +438,7 @@ class _OwnerScreenState extends State<OwnerScreen> {
 
 		http.get(
 			Uri.parse(
-				"${Config.SERVER}/php/load_owner_homestay.php?userid=${widget.user.id}"
+				"${ServerConfig.SERVER}/php/load_owner_homestay.php?userid=${widget.user.id}"
 			),
 		).then((response) {
 			print(response.body);
@@ -459,7 +535,7 @@ class _OwnerScreenState extends State<OwnerScreen> {
 		try {
 			http.post(
 				Uri.parse(
-					"${Config.SERVER}/php/delete_homestay.php"
+					"${ServerConfig.SERVER}/php/delete_homestay.php"
 				),
 				body: {
 					"homestayid": homestayList[index].homestayId,
